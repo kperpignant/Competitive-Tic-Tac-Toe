@@ -21,7 +21,7 @@ var configDB = require('./config/database.js');
 var db
 
 // configuration ===============================================================
-mongoose.connect(process.env.MONGO_URI, (err, database) => {
+mongoose.connect(process.env.MONGODB_URI, (err, database) => {
   if (err) return console.log(err)
   db = database
   require('./app/routes.js')(app, passport, db);
