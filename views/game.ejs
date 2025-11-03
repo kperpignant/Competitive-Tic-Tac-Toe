@@ -83,7 +83,7 @@
                         <% if (isPlayerX) { %>
                             <br><br>
                             <p>Share this game link with a friend:</p>
-                            <input type="text" class="form-control" value="<%= 'http://' + (typeof req !== 'undefined' ? req.get('host') : 'localhost:8080') + '/game/' + game._id %>" readonly onclick="this.select()">
+                            <input type="text" class="form-control" value="<%= (process.env.NODE_ENV === 'production' ? 'https://' : 'http://') + req.get('host') + '/game/' + game._id %>" readonly onclick="this.select()">
                             <br>
                             <button class="btn btn-danger delete-game" data-game-id="<%= game._id %>">
                                 <i class="fa fa-trash"></i> Cancel Game

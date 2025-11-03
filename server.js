@@ -1,5 +1,6 @@
 // server.js
-
+//Claude AI
+require('dotenv').config();
 // set up ======================================================================
 // get all the tools we need
 var express  = require('express');
