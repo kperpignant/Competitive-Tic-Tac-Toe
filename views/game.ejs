@@ -1,0 +1,155 @@
+<!doctype html>
+<!-- -------CLAUDE AI Helped-------
+-------------------------------- -->
+<html>
+<head>
+    <title>Tic-Tac-Toe - Game</title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(3, 120px);
+            grid-gap: 10px;
+            margin: 20px auto;
+            width: fit-content;
+        }
+        .game-cell {
+            width: 120px;
+            height: 120px;
+            background: #fff;
+            border: 3px solid #333;
+            font-size: 60px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .game-cell:hover:not(.taken) {
+            background: #f0f0f0;
+            transform: scale(1.05);
+        }
+        .game-cell.taken {
+            cursor: not-allowed;
+        }
+        .game-cell.X {
+            color: #e74c3c;
+        }
+        .game-cell.O {
+            color: #3498db;
+        }
+        .game-info {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .status-badge {
+            font-size: 18px;
+            padding: 10px 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <div class="page-header text-center">
+        <h1><span class="fa fa-gamepad"></span> Tic-Tac-Toe</h1>
+        <a href="/profile" class="btn btn-default btn-sm"><i class="fa fa-arrow-left"></i> Back to Lobby</a>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-8 col-sm-offset-2">
+            
+            <!-- GAME INFO -->
+            <div class="game-info well">
+                <h3>
+                    <span class="label label-danger">X</span> <%= game.playerX.email %>
+                    <strong>VS</strong>
+                    <% if (game.playerO) { %>
+                        <span class="label label-primary">O</span> <%= game.playerO.email %>
+                    <% } else { %>
+                        <span class="label label-default">Waiting for opponent...</span>
+                    <% } %>
+                </h3>
+
+                <!-- GAME STATUS -->
+                <div class="game-status" style="margin-top: 20px;">
+                    <% if (game.status === 'waiting') { %>
+                        <span class="label label-warning status-badge">
+                            <i class="fa fa-clock-o"></i> Waiting for opponent to join...
+                        </span>
+                        <% if (isPlayerX) { %>
+                            <br><br>
+                            <p>Share this game link with a friend:</p>
+                            <input type="text" class="form-control" value="<%= 'http://' + (typeof req !== 'undefined' ? req.get('host') : 'localhost:8080') + '/game/' + game._id %>" readonly onclick="this.select()">
+                            <br>
+                            <button class="btn btn-danger delete-game" data-game-id="<%= game._id %>">
+                                <i class="fa fa-trash"></i> Cancel Game
+                            </button>
+                        <% } %>
+                    <% } else if (game.status === 'active') { %>
+                        <% if ((game.currentTurn === 'X' && isPlayerX) || (game.currentTurn === 'O' && isPlayerO)) { %>
+                            <span class="label label-success status-badge">
+                                <i class="fa fa-hand-pointer-o"></i> YOUR TURN!
+                            </span>
+                        <% } else { %>
+                            <span class="label label-info status-badge">
+                                <i class="fa fa-hourglass-half"></i> Opponent's Turn
+                            </span>
+                        <% } %>
+                    <% } else if (game.status === 'finished') { %>
+                        <% if (game.winner === 'draw') { %>
+                            <span class="label label-default status-badge">
+                                <i class="fa fa-handshake-o"></i> It's a Draw!
+                            </span>
+                        <% } else if ((game.winner === 'X' && isPlayerX) || (game.winner === 'O' && isPlayerO)) { %>
+                            <span class="label label-success status-badge">
+                                <i class="fa fa-trophy"></i> YOU WON!
+                            </span>
+                        <% } else { %>
+                            <span class="label label-danger status-badge">
+                                <i class="fa fa-frown-o"></i> You Lost
+                            </span>
+                        <% } %>
+                        <br><br>
+                        <a href="/profile" class="btn btn-primary">
+                            <i class="fa fa-home"></i> Back to Lobby
+                        </a>
+                    <% } %>
+                </div>
+            </div>
+
+            <!-- GAME BOARD -->
+            <div class="game-board" id="gameBoard">
+                    <% for(var i=0; i<9; i++) {%>
+                        <div class="game-cell <%= game.board[i] ? 'taken ' + game.board[i] : '' %>" 
+                            data-position="<%= i %>">
+                            <%= game.board[i] %>
+                        </div>
+                    <% } %>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const gameData = <%- JSON.stringify({
+        id: game._id.toString(),
+        status: game.status,
+        currentTurn: game.currentTurn,
+        isPlayerX: isPlayerX,
+        isPlayerO: isPlayerO,
+        board: game.board
+    }) %>;
+    console.log('Game data on load:', gameData);
+</script>
+<script src="/game.js"></script>
+
+</body>
+</html>
+<!-- -------CLAUDE AI Helped-------
+-------------------------------- -->

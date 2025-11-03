@@ -1,0 +1,116 @@
+<!doctype html>
+<!-- -------CLAUDE AI Helped-------
+-------------------------------- -->
+<html>
+<head>
+    <title>Tic-Tac-Toe - Game Lobby</title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div class="container">
+
+    <div class="page-header text-center">
+        <h1><span class="fa fa-gamepad"></span> Game Lobby</h1>
+        <p>Welcome, <%= user.local.email %></p>
+        <a href="/logout" class="btn btn-default btn-sm">Logout</a>
+    </div>
+
+    <div class="row">
+
+        <!-- CREATE NEW GAME -->
+        <div class="col-sm-12">
+            <div class="well text-center">
+                <h3><span class="fa fa-plus-circle"></span> Start a New Game</h3>
+                <form action="/game/create" method="POST">
+                    <button type="submit" class="btn btn-success btn-lg">
+                        <i class="fa fa-plus"></i> Create New Game
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- MY ACTIVE GAMES -->
+        <div class="col-sm-6">
+            <div class="well">
+                <h3><span class="fa fa-trophy"></span> My Games</h3>
+                <% if (myGames.length === 0) { %>
+                    <p class="text-muted">No active games. Create one or join an available game!</p>
+                <% } else { %>
+                    <ul class="list-group">
+                    <% for(var i=0; i<myGames.length; i++) {%>
+                        <li class="list-group-item">
+                            <% if (myGames[i].playerX.id === user._id.toString()) { %>
+                                <strong>You (X)</strong> vs <strong><%= myGames[i].playerO.email %> (O)</strong>
+                            <% } else { %>
+                                <strong><%= myGames[i].playerX.email %> (X)</strong> vs <strong>You (O)</strong>
+                            <% } %>
+                            <br>
+                            <small>
+                                Status: 
+                                <% if (myGames[i].status === 'active') { %>
+                                    <span class="label label-primary">In Progress</span>
+                                    <% if ((myGames[i].currentTurn === 'X' && myGames[i].playerX.id === user._id.toString()) || 
+                                           (myGames[i].currentTurn === 'O' && myGames[i].playerO.id === user._id.toString())) { %>
+                                        <span class="label label-success">Your Turn!</span>
+                                    <% } else { %>
+                                        <span class="label label-warning">Opponent's Turn</span>
+                                    <% } %>
+                                <% } else if (myGames[i].status === 'finished') { %>
+                                    <span class="label label-default">Finished</span>
+                                    <% if (myGames[i].winner === 'draw') { %>
+                                        <span class="label label-info">Draw</span>
+                                    <% } else if ((myGames[i].winner === 'X' && myGames[i].playerX.id === user._id.toString()) || 
+                                                  (myGames[i].winner === 'O' && myGames[i].playerO.id === user._id.toString())) { %>
+                                        <span class="label label-success">You Won!</span>
+                                    <% } else { %>
+                                        <span class="label label-danger">You Lost</span>
+                                    <% } %>
+                                <% } %>
+                            </small>
+                            <a href="/game/<%= myGames[i]._id %>" class="btn btn-primary btn-sm pull-right">
+                                <i class="fa fa-eye"></i> View Game
+                            </a>
+                            <div class="clearfix"></div>
+                        </li>
+                    <% } %>
+                    </ul>
+                <% } %>
+            </div>
+        </div>
+
+        <!-- AVAILABLE GAMES TO JOIN -->
+        <div class="col-sm-6">
+            <div class="well">
+                <h3><span class="fa fa-users"></span> Available Games</h3>
+                <% if (availableGames.length === 0) { %>
+                    <p class="text-muted">No games waiting for players. Create a new game!</p>
+                <% } else { %>
+                    <ul class="list-group">
+                    <% for(var i=0; i<availableGames.length; i++) {%>
+                        <li class="list-group-item">
+                            <strong><%= availableGames[i].playerX.email %></strong> is waiting for an opponent
+                            <br>
+                            <small class="text-muted">Created <%= new Date(availableGames[i].createdAt).toLocaleString() %></small>
+                            <button class="btn btn-success btn-sm pull-right join-game" data-game-id="<%= availableGames[i]._id %>">
+                                <i class="fa fa-sign-in"></i> Join Game
+                            </button>
+                            <div class="clearfix"></div>
+                        </li>
+                    <% } %>
+                    </ul>
+                <% } %>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script src="lobby.js"></script>
+
+</body>
+</html>
+<!-- -------CLAUDE AI Helped-------
+-------------------------------- -->
